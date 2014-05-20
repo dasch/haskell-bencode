@@ -1,4 +1,4 @@
-import Data.Bencode.Parser
+import Data.Bencode
 
 decode input = case bdecode input of
     Left error -> show error
