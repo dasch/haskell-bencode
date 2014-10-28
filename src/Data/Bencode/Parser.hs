@@ -4,54 +4,50 @@ import Data.Bencode.Format
 import Text.ParserCombinators.Parsec
 
 bdecode :: String -> Either ParseError BencodedData
-bdecode input = parse parseString "(unknown)" input
+bdecode input = parse document "(unknown)" input
 
-parseString = do
-    value <- parseValue
+document = do
+    doc <- value
     optional newline
     eof
-    return value
+    return doc
 
-parseValue = choice [parseInt, parseList, parseDict, parseStr]
+value = choice [integer, list, dict, str]
 
-parseInt = do
+integer = do
     char 'i'
-    value <- parseInteger
+    sign <- integerSign
+    number <- integerNumeral
     char 'e'
-    return value
-
-parseInteger = do
-    sign <- parseIntegerSign
-    number <- parseIntegerNumber
     return $ Int (sign * number)
 
-parseIntegerSign = option 1 $ do
+integerSign = option 1 $ do
     char '-'
     return (-1)
 
-parseIntegerNumber = do
+integerNumeral = do
     digits <- many1 digit
     return $ read digits
 
-parseStr = do
+str = do
     length <- many1 digit
     char ':'
     content <- count (read length) anyToken
     return $ Str content
 
-parseList = do
+list = do
     char 'l'
-    values <- many parseValue
+    values <- many value
     char 'e'
     return $ List values
 
-parseDict = do
+dict = do
     char 'd'
-    elements <- many parseDictElement
+    elements <- many dictElement
     char 'e'
     return $ Dict elements
 
-parseDictElement = do
-    Str key <- parseStr
-    value <- parseValue
+dictElement = do
+    Str key <- str
+    value <- value
     return (key, value)
