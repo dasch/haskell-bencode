@@ -4,13 +4,13 @@ import Data.Bencode.Format
 import Text.ParserCombinators.Parsec
 
 bdecode :: String -> Either ParseError BencodedData
-bdecode input = parse document "(unknown)" input
+bdecode input = parse datum "(unknown)" input
 
-document = do
-    doc <- value
+datum = do
+    val <- value
     optional newline
     eof
-    return doc
+    return val
 
 value = choice [integer, list, dict, str]
 
