@@ -11,13 +11,13 @@ cabal-version:       >=1.8
 executable bdecode
   hs-source-dirs:      src
   main-is:             Data/Bencode/Decoder.hs
-  build-depends:       base ==4.6.*, parsec ==3.1.*
+  build-depends:       base >= 4, parsec ==3.1.*
 
 test-suite Tests
   hs-source-dirs: src test
   main-is: tests.hs
   Type: exitcode-stdio-1.0
-  build-depends:       base ==4.6.*, Cabal >= 1.16.0
+  build-depends:       base >= 4, Cabal >= 1.16.0
                        , parsec ==3.1.*
                        , QuickCheck
                        , HUnit
